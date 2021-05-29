@@ -9,17 +9,11 @@ abstract class AbstractFlow
 {
     protected $name;
     protected $flow;
-    protected static $defaultFlow;
     protected static $arguments;
 
     public function getFlow()
     {
         return $this->flow;
-    }
-
-    public static function getDefaultFlow()
-    {
-        return self::$defaultFlow;
     }
 
     public function addAccessory(AbstractFlow $accessory, State $after = null)
@@ -29,7 +23,7 @@ abstract class AbstractFlow
         }
         else {
             foreach ($accessory->flow as $state) {
-                $afterIndex = Flow::getIndexOfState($after, $this->flow);
+                $afterIndex = Flow::getIndexOfState($after->name, $this->flow);
                 $firstSlice = array_slice($this->flow, 0, $afterIndex + 1);
                 $secondSlice = array_slice($this->flow, $afterIndex + 1, count($this->flow));
                 $this->flow = $firstSlice;

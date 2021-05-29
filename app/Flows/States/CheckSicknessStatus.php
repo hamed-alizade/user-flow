@@ -18,5 +18,6 @@ class CheckSicknessStatus extends State
     public static function checkSicknessStatus()
     {
         return 'yes';
+//        return 'no';
     }
 }
