@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\DB;
 
 class BaseFlow
 {
+    private const INOUT = 'inout';
+    private const PROCESS = 'process';
+    private const DECISION = 'decision';
+
     protected static $flow = [];
     protected static $arguments = [];
     protected static $defaultFlow;
@@ -16,68 +20,86 @@ class BaseFlow
         return collect($states)->pluck('name')->toArray();
     }
 
-    public static function getNextState($userId, $requestedState, $arguments) : string
+//    public static function getState($userId, $nextState, $arguments) : string
+//    {
+//
+//    }
+
+    public static function getNextState($userId, $currentState, $arguments) : string
     {
         self::$arguments = $arguments;
 
-        [$requestedFlowName, $requestedState] = self::separateFlowAndState($requestedState);
-        $flowName = ucfirst($requestedFlowName) . 'Flow';
+        [$flowName, $currentStateName] = self::separateFlowAndState(strtolower($currentState));
+        $flowClassName = ucfirst($flowName) . 'Flow';
+        self::$flow = self::loadStatesOfFlow($flowClassName);
 
-        $flowClassName = __NAMESPACE__ .'\\' . $flowName;
-        $flowObj = new $flowClassName;
-        self::$flow = call_user_func(array($flowObj, 'getFlow'));
-
-        $userCheckpoint = self::getUserCheckpoint($userId, $flowName);
-        if ( ! $userCheckpoint) {
-            [self::$flow, $requestedState]  = self::getDefaultFlow();
-            $requestedState = $requestedState->name;
+        $userCheckpoint = self::getUserCheckpoint($userId, $flowClassName);
+        if($userCheckpoint->checkpoint) {
+            $checkpoint = $userCheckpoint->checkpoint;
+        } else {
+            [self::$flow, $currentStateName, $checkpoint] = self::getDefaultValues();
         }
+        $nextPlus1State = null;
 
-        $requestedStateIndex = self::getIndexOfState($requestedState, self::$flow);
-        if ($requestedStateIndex === false) {
-            return 'not exist this page!';
-            // stop or abort(404)
-        }
+        do {
+            $currentStateIndex = self::getIndexOfState(__NAMESPACE__ .'\\States\\'.self::toPascalCase($currentStateName), self::$flow);
+            if ($currentStateIndex === false) {
+                return 'not exist this page!';
+                // stop or abort(404)
+            }
 
-        $nextState = $requestedState;
-        if ( ! empty($userCheckpoint)) {
-            if (in_array($userCheckpoint->checkpoint, self::$flow[$requestedStateIndex]->allowedCheckpoints)) {
-                $nextState = $requestedState;
-            } else {
+            $nextStateIndex = $currentStateIndex + 1;
+            $nextState = AbstractFlow::callMethod(self::$flow[$nextStateIndex],'getThis');
+            if($nextPlus1State) {
+                $nextState = AbstractFlow::callMethod($nextPlus1State,'getThis');
+                $nextPlus1State = null;
+            }
+            if (empty($nextState)) {
+                return 'not exist this page!';
+                // stop or abort(404)
+            }
+
+            if ($nextState->allowedCheckpoints and ! in_array($checkpoint, $nextState->allowedCheckpoints)) {
                 return 'not allowed!';
                 // stop or move to somewhere
             }
-        }
 
-        $nextCheckpoint = self::$flow[$requestedStateIndex]->checkpoint;
-        $nextStatePlus1Index = $requestedStateIndex + 1;
-        if(empty(self::$flow[$nextStatePlus1Index])) {
-            return 'not exist any state in this flow!';
-        }
-        $nextStatePlus1 = self::$flow[$nextStatePlus1Index];
-
-        while ($nextStatePlus1->type == 'decision')
-        {
-            State::$arguments = self::$arguments;
-            $result = call_user_func(array(__NAMESPACE__ .'\\States\\'. ucfirst($nextStatePlus1->name), $nextStatePlus1->name));
-            if ($result == 'yes') {
-                $nextStatePlus1 = $nextStatePlus1->yes;
-            } else {
-                $nextStatePlus1 = $nextStatePlus1->no;
+            if (in_array(strtolower($nextState->type),[self::DECISION, self::PROCESS])) {
+                State::$arguments = self::$arguments;
+                $stateClassName = __NAMESPACE__ .'\\States\\'. ucfirst($nextState->name);
+                $stateObj = new $stateClassName();
+                $result = call_user_func(array($stateObj, $nextState->name));
+                self::$arguments = State::$arguments;
+                if (strtolower($nextState->type) == self::DECISION) {
+                    $nextPlus1State = $nextState->$result ?? null;
+                } elseif (strtolower($nextState->type) == self::PROCESS) {
+                    $currentStateName = $nextState->name;
+                }
+                $nextStateCheckpoint = $stateObj->checkpoint ?? $nextState->checkpoint;
             }
-            $nextCheckpoint = $nextStatePlus1->checkpoint;
-            $nextState = $nextStatePlus1->name;
+            else{
+                $nextStateCheckpoint = $nextState->checkpoint;
+            }
+            $nextStateName = $nextState->name;
+            $checkpoint = $nextStateCheckpoint ?? $checkpoint;
+//    echo $nextStateName.'-'.$checkpoint.'<br>';
+        } while (in_array(strtolower($nextState->type),[self::DECISION, self::PROCESS]));
+
+        if($checkpoint) {
+            self::setUserCheckpoint($userId, $flowClassName, $checkpoint);
         }
-        if($nextCheckpoint) {
-            self::setUserCheckpoint($userId, $flowName, $nextCheckpoint);
-        }
-        return $nextState;
+        return $flowName . '/' . $nextStateName;
+    }
+
+    protected static function toPascalCase($string)
+    {
+        return str_replace(' ', '', ucwords(str_replace(['-', '/'], ' ', $string)));
     }
 
     public static function getIndexOfState(string $state,array $flow)
     {
-        $statesName = self::getStatesName($flow);
-        return array_search($state, $statesName);
+//        $statesName = self::getStatesName($flow);
+        return array_search($state, $flow);
     }
 
     private static function separateFlowAndState($flowAndState) : array
@@ -101,12 +123,18 @@ class BaseFlow
         );
     }
 
-    private static function getDefaultFlow() : array
+    private static function getDefaultValues() : array
     {
+        $defaultCheckpoint = static::$defaultCheckpoint;
         $defaultFlow = static::$defaultFlow;
         $className = __NAMESPACE__ .'\\'. $defaultFlow;
-        $defaultFlowObj = new $className;
-        $flow = call_user_func(array($defaultFlowObj, 'getFlow'));
-        return [$flow, $flow[0]];
+        $flow = AbstractFlow::callMethod($className, 'getFlow');
+        return [$flow, $flow[0], $defaultCheckpoint];
+    }
+
+    public static function loadStatesOfFlow(string $flowName) : array
+    {
+        $flowClassName = __NAMESPACE__ .'\\' . $flowName;
+        return AbstractFlow::callMethod($flowClassName, 'getFlow');
     }
 }

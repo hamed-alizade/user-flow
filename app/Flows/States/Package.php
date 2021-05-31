@@ -6,6 +6,6 @@ class Package extends State
 {
     public $name = 'package';
     public $type = 'inout';
-    public $allowedCheckpoints = ['REG'];
+    public $allowedCheckpoints = ['REG', 'SPAY'];
 
 }

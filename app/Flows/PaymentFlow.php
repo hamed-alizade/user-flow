@@ -18,14 +18,14 @@ class PaymentFlow extends AbstractFlow
     public function __construct()
     {
         $this->flow = [
-            new PaymentBill(),
-            new PaymentCard(),
-            new PaymentCardWait(),
-            new CheckCardPaymentStatus(),
-            new PaymentCardConfirm(),
-            new PaymentCardReject(),
-            new PaymentOnlineSuccess(),
-            new PaymentOnlineFail(),
+            PaymentBill::class,
+            PaymentCard::class,
+            PaymentCardWait::class,
+            CheckCardPaymentStatus::class,
+            PaymentCardConfirm::class,
+            PaymentCardReject::class,
+            PaymentOnlineSuccess::class,
+            PaymentOnlineFail::class,
         ];
     }
 }

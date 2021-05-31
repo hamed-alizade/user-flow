@@ -11,7 +11,7 @@ class CheckPaymentType extends State
 
     public function __construct()
     {
-        $this->yes = new PaymentCard();
-        $this->no = new PaymentOnline();
+        $this->yes = PaymentCard::class;
+        $this->no = PaymentOnline::class;
     }
 }

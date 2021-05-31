@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4fc15b33-a3bb-440b-9af7-b9c15d802ab7" name="Default Changelist" comment="" />
+    <list default="true" id="4fc15b33-a3bb-440b-9af7-b9c15d802ab7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Flows/AbstractFlow.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Flows/AbstractFlow.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Flows/BaseFlow.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Flows/BaseFlow.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Flows/Flow.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Flows/Flow.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Flows/PaymentFlow.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Flows/PaymentFlow.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Flows/RegFlow.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Flows/RegFlow.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Flows/States/CheckCardPaymentStatus.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Flows/States/CheckCardPaymentStatus.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Flows/States/CheckDietPermission.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Flows/States/CheckDietPermission.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Flows/States/CheckPaymentType.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Flows/States/CheckPaymentType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Flows/States/CheckSicknessStatus.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Flows/States/CheckSicknessStatus.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Flows/States/Package.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Flows/States/Package.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Flows/States/SickSelect.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Flows/States/SickSelect.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Flows/States/Size.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Flows/States/Size.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Flows/States/State.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Flows/States/State.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TestController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TestController.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
   </component>
@@ -135,8 +151,15 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/Flows/States" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="php.override.implement.member.chooser.php.doc" value="NONE" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\laragon\www\user-flow\app\Flows\States" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name="phpunit.xml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
@@ -153,6 +176,7 @@
       <option name="presentableId" value="Default" />
       <updated>1622269319327</updated>
       <workItem from="1622269320577" duration="156000" />
+      <workItem from="1622269485639" duration="37308000" />
     </task>
     <servers />
   </component>

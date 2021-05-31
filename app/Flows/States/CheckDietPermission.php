@@ -11,11 +11,11 @@ class CheckDietPermission extends State
 
     public function __construct()
     {
-        $this->yes = new DietBlock();
-        $this->no = new CheckSicknessStatus();
+        $this->yes = DietBlock::class;
+        $this->no = CheckSicknessStatus::class;
     }
 
-    public static function checkDietPermission()
+    public function checkDietPermission()
     {
         if (self::$arguments['diet_type_id'] == 1)
             return 'yes';

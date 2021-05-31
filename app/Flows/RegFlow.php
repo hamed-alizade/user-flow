@@ -11,6 +11,7 @@ use App\Flows\States\Package;
 use App\Flows\States\Report;
 use App\Flows\States\SickBlock;
 use App\Flows\States\SickSelect;
+use App\Flows\States\SickSelectProcess;
 use App\Flows\States\Size;
 
 class RegFlow extends AbstractFlow
@@ -20,29 +21,30 @@ class RegFlow extends AbstractFlow
     public function __construct()
     {
         $this->flow = [
-            new DietType(),
-            new Size(),
-            new Report(),
-            new SickSelect(),
-            new Package(),
-            new CheckDietPermission(),
-            new CheckSicknessStatus(),
-            new DietBlock(),
-            new SickBlock(),
+            DietType::class,
+            Size::class,
+            Report::class,
+            SickSelect::class,
+            SickSelectProcess::class,
+            Package::class,
+            CheckDietPermission::class,
+            CheckSicknessStatus::class,
+            DietBlock::class,
+            SickBlock::class,
 
-            new Activity(),
-//            new DietHistory(),
-//            new DietGoal(),
-//            new Overview(),
-//            new CheckCountry(),
-//            new Messenger(),
-//            new CheckHavingPhysicalPackage(),
-//            new Postal(),
-//            new MenuSelect(),
-//            new MenuConfirm(),
-//            new StartFoodListProcess(),
+            Activity::class,
+//            DietHistory::class,
+//            DietGoal::class,
+//            Overview::class,
+//            CheckCountry::class,
+//            Messenger::class,
+//            CheckHavingPhysicalPackage::class,
+//            Postal::class,
+//            MenuSelect::class,
+//            MenuConfirm::class,
+//            StartFoodListProcess::class,
         ];
 
-        $this->addAccessory(new PaymentFlow(), new SickBlock());
+        $this->addAccessory(PaymentFlow::class, SickBlock::class);
     }
 }

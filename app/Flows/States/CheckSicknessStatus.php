@@ -11,11 +11,11 @@ class CheckSicknessStatus extends State
 
     public function __construct()
     {
-        $this->yes = new SickBlock();
-        $this->no = new PaymentBill();
+        $this->yes = SickBlock::class;
+        $this->no = PaymentBill::class;
     }
 
-    public static function checkSicknessStatus()
+    public function checkSicknessStatus()
     {
         return 'yes';
 //        return 'no';

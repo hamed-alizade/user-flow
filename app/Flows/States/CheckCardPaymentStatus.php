@@ -11,7 +11,7 @@ class CheckCardPaymentStatus extends State
 
     public function __construct()
     {
-        $this->yes = new PaymentCardConfirm();
-        $this->no = new PaymentCardReject();
+        $this->yes = PaymentCardConfirm::class;
+        $this->no = PaymentCardReject::class;
     }
 }

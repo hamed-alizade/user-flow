@@ -3,7 +3,8 @@
 namespace App\Flows;
 
 
-use App\Flows\States\State;
+
+use phpDocumentor\Reflection\Types\Mixed_;
 
 abstract class AbstractFlow
 {
@@ -16,14 +17,16 @@ abstract class AbstractFlow
         return $this->flow;
     }
 
-    public function addAccessory(AbstractFlow $accessory, State $after = null)
+    public function addAccessory(string $accessory, string $after = null)
     {
+        $accessoryFlow = self::callMethod($accessory , 'getFlow');
+
         if( ! $after) {
-            $this->flow = array_merge($this->flow, $accessory->flow);
+            $this->flow = array_merge($this->flow, $accessoryFlow);
         }
         else {
-            foreach ($accessory->flow as $state) {
-                $afterIndex = Flow::getIndexOfState($after->name, $this->flow);
+            foreach ($accessoryFlow as $state) {
+                $afterIndex = Flow::getIndexOfState($after, $this->flow);
                 $firstSlice = array_slice($this->flow, 0, $afterIndex + 1);
                 $secondSlice = array_slice($this->flow, $afterIndex + 1, count($this->flow));
                 $this->flow = $firstSlice;
@@ -32,5 +35,13 @@ abstract class AbstractFlow
                 $after = $state;
             }
         }
+    }
+
+    public static function callMethod(string $pathAndClassName, string $functionName, bool $statically = false)
+    {
+        if ( ! $statically) {
+            $obj = new $pathAndClassName;
+        }
+        return call_user_func(array($obj ?? $pathAndClassName, $functionName));
     }
 }

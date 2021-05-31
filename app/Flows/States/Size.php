@@ -6,6 +6,6 @@ class Size extends State
 {
     public $name = 'size';
     public $type = 'inout';
-    public $allowedCheckpoints = ['REG'];
+    public $allowedCheckpoints = ['REG', 'DBLOCKED'];
 
 }

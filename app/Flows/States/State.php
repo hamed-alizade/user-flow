@@ -16,4 +16,18 @@ abstract class State
     public static $arguments;
 
 
+    public function getThis()
+    {
+        return $this;
+    }
+
+    public function getArguments()
+    {
+        return $this->getArguments();
+    }
+
+    public function setArguments(array $arguments)
+    {
+        self::$arguments = $arguments;
+    }
 }
