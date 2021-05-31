@@ -17,6 +17,7 @@ use App\Flows\States\Size;
 class RegFlow extends AbstractFlow
 {
     protected $name = 'RegFlow';
+    protected $isMain = true;
 
     public function __construct()
     {

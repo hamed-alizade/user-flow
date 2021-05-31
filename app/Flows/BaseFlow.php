@@ -30,10 +30,17 @@ class BaseFlow
         self::$arguments = $arguments;
 
         [$flowName, $currentStateName] = self::separateFlowAndState(strtolower($currentState));
-        $flowClassName = ucfirst($flowName) . 'Flow';
-        self::$flow = self::loadStatesOfFlow($flowClassName);
+        $flowClassName = ucfirst(strtolower($flowName)) . 'Flow';
+        $flowClass = __NAMESPACE__ . '\\' . $flowClassName;
+        $flowObj = new $flowClass;
+        $isMain = $flowObj->isMain();
+        self::$flow = $flowObj->getFlow();
 
-        $userCheckpoint = self::getUserCheckpoint($userId, $flowClassName);
+        if ( ! $isMain) {
+            return 'this isn\'t main flow!';
+        }
+
+        $userCheckpoint = AbstractFlow::getUserCheckpoint($userId, $flowClassName);
         if( ! empty($userCheckpoint->checkpoint)) {
             $checkpoint = $userCheckpoint->checkpoint;
         } else {
@@ -62,10 +69,12 @@ class BaseFlow
 
             if ($nextState->allowedCheckpoints and ! in_array($checkpoint, $nextState->allowedCheckpoints)) {
                 return 'not allowed!';
-                // stop or move to somewhere
+                // stop or move to a state by checkpoint
             }
 
             if (in_array(strtolower($nextState->type),[self::DECISION, self::PROCESS])) {
+                State::$userId = $userId;
+                State::$currentFlowClassName = $flowClassName;
                 State::$arguments = self::$arguments;
                 $stateClassName = __NAMESPACE__ .'\\States\\'. ucfirst($nextState->name);
                 $stateObj = new $stateClassName();
@@ -82,12 +91,12 @@ class BaseFlow
                 $nextStateCheckpoint = $nextState->checkpoint;
             }
             $nextStateName = $nextState->name;
+            $previousCheckpoint = $checkpoint;
             $checkpoint = $nextStateCheckpoint ?? $checkpoint;
-//    echo $nextStateName.'-'.$checkpoint.'<br>';
         } while (in_array(strtolower($nextState->type),[self::DECISION, self::PROCESS]));
 
         if($checkpoint) {
-            self::setUserCheckpoint($userId, $flowClassName, $checkpoint);
+            AbstractFlow::setUserCheckpoint($userId, $flowClassName, $previousCheckpoint, $checkpoint);
         }
         return $flowName . '/' . $nextStateName;
     }
@@ -109,19 +118,6 @@ class BaseFlow
         $flow = substr($flowAndState, 0, $slashPosition);
         $state = substr($flowAndState, $slashPosition + 1);
         return [$flow, $state];
-    }
-
-    public static function getUserCheckpoint($userId, $flowName)
-    {
-        return DB::table('user_checkpoint')->where('user_id', $userId)->where('flow_name', $flowName)->get()->first();
-    }
-
-    public static function setUserCheckpoint($userId, $flowName, $checkpoint)
-    {
-        DB::table('user_checkpoint')->updateOrInsert(
-            ['user_id' => $userId, 'flow_name' => $flowName],
-            ['checkpoint' => $checkpoint]
-        );
     }
 
     private static function getDefaultValues() : array
