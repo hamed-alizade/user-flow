@@ -13,7 +13,7 @@ class SickSelectProcess extends State
         if (self::$arguments['sick_id'] != 1)
         {
             self::$arguments['test'] = 'test';
-            $this->checkpoint = 'SPAY';
+            $this->checkpoint = self::getUserPreviousCheckpoint();
         }
     }
 }

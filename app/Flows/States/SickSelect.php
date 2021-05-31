@@ -6,6 +6,6 @@ class SickSelect extends State
 {
     public $name = 'sick/select';
     public $type = 'inout';
-    public $allowedCheckpoints = ['REG','BLOCKED'];
+    public $allowedCheckpoints = ['REG','BLOCKED', 'NORMAL'];
 
 }

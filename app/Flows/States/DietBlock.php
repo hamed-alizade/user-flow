@@ -7,6 +7,6 @@ class DietBlock extends State
     public $name = 'diet/block';
     public $type = 'inout';
     public $checkpoint = 'DBLOCKED';
-    public $allowedCheckpoints = ['REG'];
+    public $allowedCheckpoints = ['REG', 'NORMAL'];
 
 }
