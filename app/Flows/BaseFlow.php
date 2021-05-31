@@ -34,7 +34,7 @@ class BaseFlow
         self::$flow = self::loadStatesOfFlow($flowClassName);
 
         $userCheckpoint = self::getUserCheckpoint($userId, $flowClassName);
-        if($userCheckpoint->checkpoint) {
+        if( ! empty($userCheckpoint->checkpoint)) {
             $checkpoint = $userCheckpoint->checkpoint;
         } else {
             [self::$flow, $currentStateName, $checkpoint] = self::getDefaultValues();
@@ -48,7 +48,8 @@ class BaseFlow
                 // stop or abort(404)
             }
 
-            $nextStateIndex = $currentStateIndex + 1;
+            $nextStateIndex = $currentStateIndex;
+            if( ! empty($userCheckpoint->checkpoint)) { $nextStateIndex = $currentStateIndex + 1; }
             $nextState = AbstractFlow::callMethod(self::$flow[$nextStateIndex],'getThis');
             if($nextPlus1State) {
                 $nextState = AbstractFlow::callMethod($nextPlus1State,'getThis');
@@ -129,7 +130,8 @@ class BaseFlow
         $defaultFlow = static::$defaultFlow;
         $className = __NAMESPACE__ .'\\'. $defaultFlow;
         $flow = AbstractFlow::callMethod($className, 'getFlow');
-        return [$flow, $flow[0], $defaultCheckpoint];
+        $firstState = AbstractFlow::callMethod($flow[0], 'getThis')->name;
+        return [$flow, $firstState, $defaultCheckpoint];
     }
 
     public static function loadStatesOfFlow(string $flowName) : array
