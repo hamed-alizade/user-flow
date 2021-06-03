@@ -5,7 +5,7 @@ namespace App\Flows;
 
 class Flow extends BaseFlow
 {
-    protected static $defaultFlow = 'RegFlow';
+    protected static $defaultFlow = RegFlow::class;
     protected static $defaultCheckpoint = 'REG';
 
 }

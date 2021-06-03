@@ -12,6 +12,10 @@ class CheckVisitStatus extends State
     public function __construct()
     {
         $this->yes = MenuSelect::class;
-        $this->no = MenuAlert::class;
+    }
+
+    public function checkVisitStatus()
+    {
+        return self::YES;
     }
 }

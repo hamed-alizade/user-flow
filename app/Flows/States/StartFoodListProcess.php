@@ -8,7 +8,7 @@ class StartFoodListProcess extends State
     public $type = 'process';
 
 
-    public function sickSelectProcess()
+    public function startFoodListProcess()
     {
 
     }

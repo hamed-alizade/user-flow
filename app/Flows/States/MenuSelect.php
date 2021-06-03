@@ -6,6 +6,6 @@ class MenuSelect extends State
 {
     public $name = 'menu/select';
     public $type = 'inout';
-    public $allowedCheckpoints = ['NORMAL'];
+    public $allowedCheckpoints = ['POK', 'NORMAL'];
 
 }

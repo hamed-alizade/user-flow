@@ -3,6 +3,7 @@
 namespace App\Flows\States;
 
 use App\Flows\AbstractFlow;
+use App\Flows\Flow;
 
 abstract class State
 {
@@ -10,11 +11,12 @@ abstract class State
     public $type;
 
     public $allowedCheckpoints;
-    public $checkpoint;
-    public $alias;
+    protected $checkpoint;
 
     public $yes;
     public $no;
+    const YES = 'yes';
+    const NO = 'no';
     public static $arguments;
     public static $currentFlowClassName;
     public static $userId;
@@ -34,8 +36,14 @@ abstract class State
         self::$arguments = $arguments;
     }
 
-    public static function getUserPreviousCheckpoint() : ? string
+    public function getCheckpoint()
     {
-        return AbstractFlow::getUserPreviousCheckpoint(self::$userId, self::$currentFlowClassName);
+        return $this->checkpoint;
     }
+
+    public function setCheckpoint(string $checkpoint)
+    {
+        $this->checkpoint = $checkpoint;
+    }
+
 }

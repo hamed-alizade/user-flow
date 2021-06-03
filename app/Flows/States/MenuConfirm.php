@@ -2,11 +2,10 @@
 
 namespace App\Flows\States;
 
-class View extends State
+class MenuConfirm extends State
 {
-    public $name = 'view';
+    public $name = 'menu/confirm';
     public $type = 'inout';
     public $allowedCheckpoints = ['POK', 'NORMAL'];
-    public $checkpoint = 'NORMAL';
 
 }

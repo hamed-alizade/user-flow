@@ -13,8 +13,8 @@ use App\Flows\States\PaymentOnlineSuccess;
 
 class PaymentFlow extends AbstractFlow
 {
-    protected $name = 'PaymentFlow';
     protected $isMain = false;
+    protected $isDependent = true;
 
     public function __construct()
     {

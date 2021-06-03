@@ -18,8 +18,8 @@ class CheckDietPermission extends State
     public function checkDietPermission()
     {
         if (self::$arguments['diet_type_id'] == 1)
-            return 'yes';
+            return self::YES;
         else
-            return 'no';
+            return self::NO;
     }
 }
