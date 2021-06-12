@@ -31,7 +31,7 @@ class BaseFlow
     {
         self::$arguments = $arguments;
 
-        self::$userFlow = self::detectFlow($userId, $currentState);
+        self::$userFlow = self::detectUserFlow($userId, $currentState);
 
         $nextPlus1State = null;
         do {
@@ -53,7 +53,7 @@ class BaseFlow
                 $nextPlus1State = null;
             }
             self::$userFlow->state = $nextState->name;
-            self::$userFlow->state = $nextState->type;
+            self::$userFlow->state_type = $nextState->type;
             self::$userFlow->state_address = __NAMESPACE__ . '\\States\\' . self::toPascalCase($nextState->name);
 
             if (empty($nextState)) {
@@ -88,7 +88,10 @@ class BaseFlow
             else {
                 $nextStateCheckpoint = $nextState->getCheckpoint();
             }
-            $next = strtolower(substr(self::$userFlow->flow_name,0,-4)) . '/' . $nextState->name;
+
+            $flowName = self::$userFlow->flow_name;
+            if (str_ends_with(self::$userFlow->flow_name, 'Flow')) { $flowName = strtolower(str_ireplace(array('Flow'), '', $flowName)); }
+            $next = $flowName . '/' . $nextState->name;
             if (strtolower($nextState->type) == self::TERMINAL) { $next=''; }
             $checkpoint = $nextStateCheckpoint ?? self::$userFlow->checkpoint;
             if ($currentCheckpoint != $checkpoint) {
@@ -130,7 +133,7 @@ class BaseFlow
         return AbstractFlow::callMethod($flowClassName, 'getFlow');
     }
 
-    private static function detectFlow($userId, $FlowAndState) : object
+    private static function detectUserFlow($userId, $FlowAndState) : object
     {
         [$flowTitle, $state] = self::separateFlowAndState(strtolower($FlowAndState));
         $flowName = ucfirst(strtolower($flowTitle)) . 'Flow';
@@ -153,7 +156,7 @@ class BaseFlow
         if ( ! empty($userDBFlow)) {
             $stateAddress = empty($state) ? $flow[0] : __NAMESPACE__ .'\\States\\'. self::toPascalCase($state);
         } else {
-            $stateAddress = $flowClass->getCheckpoints()[strtoupper($userFlow->checkpoint)]['next'];
+            $stateAddress = $flowClass->getCheckpoints()[strtoupper($userFlow->checkpoint)]['next'] ?? $flow[0];
         }
         $stateClass = AbstractFlow::callMethod($stateAddress, 'getThis');
         if ($stateClass === false) {
