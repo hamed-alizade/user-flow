@@ -27,11 +27,11 @@ class BaseFlow
 //
 //    }
 
-    public static function getNextState($userId, $currentState, $arguments) : string
+    public static function getNextState($currentState, $arguments) : string
     {
         self::$arguments = $arguments;
 
-        self::$userFlow = self::detectUserFlow($userId, $currentState);
+        self::$userFlow = self::detectUserFlow(self::$arguments['user_id'] ?? null, $currentState);
 
         $nextPlus1State = null;
         do {
@@ -101,7 +101,7 @@ class BaseFlow
             print_r(self::$userFlow); echo '<br/><br/>';
         } while (in_array(strtolower($nextState->type),[self::DECISION, self::PROCESS]));
 
-        if(self::$userFlow->checkpoint) {
+        if(self::$userFlow->checkpoint and self::$arguments['user_id']) {
             self::setUserCheckpoint();
         }
         return $next;
@@ -167,7 +167,6 @@ class BaseFlow
             $stateType = $stateClass->type;
         }
         return (object)[
-            'user_id' => $userId,
             'source' => $source,
             'flow' => $flow,
             'flow_name' => $userFlow->flow_name,
@@ -182,6 +181,7 @@ class BaseFlow
 
     private static function getUserMainFlow($userId)
     {
+        if (empty($userId)) return null;
         return DB::table('user_checkpoint')->where('user_id', $userId)->where('is_main_flow', 1)->get()->first();
     }
 
@@ -208,13 +208,14 @@ class BaseFlow
 
     public static function getUserCheckpoint($userId, $flowName)
     {
+        if (empty($userId)) return null;
         return DB::table('user_checkpoint')->where('user_id', $userId)->where('flow_name', $flowName)->get()->first();
     }
 
     public static function setUserCheckpoint($userId = null, $isMain = null, $flowName = null, $previousCheckpoint = null, $checkpoint = null)
     {
         if( ! $userId and ! $isMain and ! $flowName and ! $previousCheckpoint and ! $checkpoint) {
-            $userId = self::$userFlow->user_id;
+            $userId = self::$arguments['user_id'] ?? null;
             $isMain = self::$userFlow->is_main;
             $flowName = self::$userFlow->flow_name;
             $previousCheckpoint = self::$userFlow->previous_checkpoint;
