@@ -30,28 +30,36 @@ class BaseFlow
     public static function getNextState($currentState, $arguments) : string
     {
         self::$arguments = $arguments;
-
         self::$userFlow = self::detectUserFlow(self::$arguments['user_id'] ?? null, $currentState);
 
         $nextPlus1State = null;
         do {
             $currentStateIndex = self::getIndexOfState(self::$userFlow->state_address, self::$userFlow->flow);
-//            $currentStateIndex = self::getIndexOfState(__NAMESPACE__ .'\\States\\'.self::toPascalCase(self::$userFlow->state), self::$userFlow->flow);
             if ($currentStateIndex === false) {
                 return 'not exist this page!';
                 // stop or abort(404)
             }
 
-            $nextStateIndex = $currentStateIndex;
-            if(strtolower(self::$userFlow->source)== 'db') { $nextStateIndex = $currentStateIndex + 1; }
-            elseif(strtolower(self::$userFlow->source)== 'previous_flow') { self::$userFlow->source= 'db'; }
-            $nextState = AbstractFlow::callMethod(self::$userFlow->flow[$nextStateIndex],'getThis');
+            $currentState = AbstractFlow::callMethod(self::$userFlow->flow[$currentStateIndex],'getThis');
+            if($currentState->next) {
+                $nextStateIndex = self::getIndexOfState($currentState->next, self::$userFlow->flow);
+            } else {
+                $nextStateIndex = $currentStateIndex;
+                if (strtolower(self::$userFlow->source) == 'db') {
+                    $nextStateIndex = $currentStateIndex + 1;
+                } elseif (strtolower(self::$userFlow->source) == 'previous_flow') {
+                    self::$userFlow->source = 'db';
+                }
+            }
+
+            $nextState = AbstractFlow::callMethod(self::$userFlow->flow[$nextStateIndex], 'getThis');
             $nextStateAddress = self::$userFlow->flow[$nextStateIndex];
-            if($nextPlus1State) {
-                $nextState = AbstractFlow::callMethod($nextPlus1State,'getThis');
+            if ($nextPlus1State) {
+                $nextState = AbstractFlow::callMethod($nextPlus1State, 'getThis');
                 $nextStateAddress = $nextPlus1State;
                 $nextPlus1State = null;
             }
+
             self::$userFlow->state = $nextState->name;
             self::$userFlow->state_type = $nextState->type;
             self::$userFlow->state_address = __NAMESPACE__ . '\\States\\' . self::toPascalCase($nextState->name);

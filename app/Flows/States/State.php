@@ -20,6 +20,7 @@ abstract class State
     public static $arguments;
     public static $currentFlowClassName;
     public static $userId;
+    public $next = null;
 
     public function getThis()
     {
