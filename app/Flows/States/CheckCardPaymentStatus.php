@@ -14,4 +14,9 @@ class CheckCardPaymentStatus extends State
         $this->yes = PaymentCardConfirm::class;
         $this->no = PaymentCardReject::class;
     }
+
+    public function CheckCardPaymentStatus()
+    {
+        return $this->yes;
+    }
 }

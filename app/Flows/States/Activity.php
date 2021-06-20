@@ -6,6 +6,6 @@ class Activity extends State
 {
     public $name = 'activity';
     public $type = 'inout';
-    public $allowedCheckpoints = ['REG'];
+    public $allowedCheckpoints = ['POK'];
 
 }

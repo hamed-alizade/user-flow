@@ -14,4 +14,9 @@ class CheckPaymentType extends State
         $this->yes = PaymentCard::class;
         $this->no = PaymentOnline::class;
     }
+
+    public function checkPaymentType()
+    {
+        return $this->yes;
+    }
 }

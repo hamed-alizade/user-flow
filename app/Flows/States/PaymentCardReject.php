@@ -8,5 +8,5 @@ class PaymentCardReject extends State
     public $type = 'inout';
     public $checkpoint = 'PFAIL';
     public $allowedCheckpoints = ['PWAIT'];
-
+    public $next = PaymentBill::class;
 }

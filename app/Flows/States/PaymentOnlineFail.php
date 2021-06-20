@@ -8,5 +8,5 @@ class PaymentOnlineFail extends State
     public $type = 'inout';
     public $checkpoint = 'PFAIL';
     public $allowedCheckpoints = ['REG'];
-
+    public $next = PaymentBill::class;
 }

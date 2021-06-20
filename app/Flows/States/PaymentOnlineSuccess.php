@@ -8,5 +8,5 @@ class PaymentOnlineSuccess extends State
     public $type = 'inout';
     public $checkpoint = 'POK';
     public $allowedCheckpoints = ['REG'];
-
+    public $next = PaymentEndPointProcess::class;
 }

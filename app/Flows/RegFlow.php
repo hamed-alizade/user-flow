@@ -40,8 +40,9 @@ class RegFlow extends AbstractFlow
 //            SickSelectProcess::class,
             Package::class,
             CheckDietPermission::class,
+            DietBlock::class,
             CheckSicknessStatus::class,
-
+            SickBlock::class,
             Activity::class,
 //            DietHistory::class,
 //            DietGoal::class,
@@ -56,7 +57,7 @@ class RegFlow extends AbstractFlow
             End::class
         ];
 
-        $this->addAccessory(PaymentFlow::class, CheckSicknessStatus::class);
+        $this->addAccessory(PaymentFlow::class, SickBlock::class);
 
         $this->checkpoints = [
             'REG'   => ['description' => 'ثبت نام ناقص' , 'next' => DietType::class],

@@ -8,5 +8,6 @@ class DietBlock extends State
     public $type = 'inout';
     public $checkpoint = 'DBLOCKED';
     public $allowedCheckpoints = ['REG', 'NORMAL'];
+    public $next = DietType::class;
 
 }

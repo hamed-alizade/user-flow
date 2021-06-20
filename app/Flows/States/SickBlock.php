@@ -8,5 +8,5 @@ class SickBlock extends State
     public $type = 'inout';
     public $checkpoint = 'BLOCKED';
     public $allowedCheckpoints = ['REG', 'NORMAL', 'BLOCKED', 'DBLOCKED'];
-
+    public $next = SickSelect::class;
 }

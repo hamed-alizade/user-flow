@@ -8,5 +8,5 @@ class PaymentCardConfirm extends State
     public $type = 'inout';
     public $checkpoint = 'POK';
     public $allowedCheckpoints = ['PWAIT'];
-
+    public $next = PaymentEndPointProcess::class;
 }
