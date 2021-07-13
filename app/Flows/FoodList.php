@@ -19,7 +19,7 @@ use App\Flows\States\SickBlock;
 use App\Flows\States\SickSelect;
 use App\Flows\States\SickSelectAction;
 use App\Flows\States\Size;
-use App\Flows\States\StartFoodListProcess;
+use App\Flows\States\StartFoodListAction;
 use App\Flows\States\View;
 use App\Flows\States\WeightAlert;
 use App\Flows\States\WeightEnter;
@@ -45,7 +45,7 @@ class FoodList extends AbstractFlow
             SickSelect::class,
             CheckDietPermission::class,
             CheckSicknessStatus::class,
-            StartFoodListProcess::class,
+            StartFoodListAction::class,
 
             End::class
         ];
