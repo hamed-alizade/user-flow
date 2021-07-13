@@ -4,8 +4,7 @@ namespace App\Flows\States;
 
 class Activity extends State
 {
-    public $name = 'activity';
-    public $type = 'inout';
+    public $type = State::DISPLAY;
     public $allowedCheckpoints = ['POK'];
 
 }

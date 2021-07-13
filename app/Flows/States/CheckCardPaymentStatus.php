@@ -4,8 +4,7 @@ namespace App\Flows\States;
 
 class CheckCardPaymentStatus extends State
 {
-    public $name = 'checkCardPaymentStatus';
-    public $type = 'decision';
+    public $type = State::DECISION;
     public $yes;
     public $no;
 

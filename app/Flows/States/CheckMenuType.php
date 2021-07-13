@@ -4,8 +4,7 @@ namespace App\Flows\States;
 
 class CheckMenuType extends State
 {
-    public $name = 'checkMenuType';
-    public $type = 'decision';
+    public $type = State::DECISION;
     public $yes;
     public $no;
 

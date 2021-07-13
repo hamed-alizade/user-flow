@@ -4,9 +4,8 @@ namespace App\Flows\States;
 
 class PaymentOnlineSuccess extends State
 {
-    public $name = 'payment/online/success';
-    public $type = 'inout';
+    public $type = State::DISPLAY;
     public $checkpoint = 'POK';
     public $allowedCheckpoints = ['REG'];
-    public $next = PaymentEndPointProcess::class;
+    public $next = PaymentEndPointAction::class;
 }

@@ -18,13 +18,13 @@ use App\Flows\States\PaymentCardWait;
 use App\Flows\States\Report;
 use App\Flows\States\SickBlock;
 use App\Flows\States\SickSelect;
-use App\Flows\States\SickSelectProcess;
+use App\Flows\States\SickSelectAction;
 use App\Flows\States\Size;
 use App\Flows\States\Start;
-use App\Flows\States\StartListFlowProcess;
+use App\Flows\States\StartListFlowAction;
 use App\Flows\States\View;
 
-class RegFlow extends AbstractFlow
+class Reg extends AbstractFlow
 {
     protected $isMain = true;
     protected $isDependent = false;
@@ -53,11 +53,11 @@ class RegFlow extends AbstractFlow
 //            Postal::class,
             MenuSelect::class,
             MenuConfirm::class,
-            StartListFlowProcess::class,
+            StartListFlowAction::class,
             End::class
         ];
 
-        $this->addAccessory(PaymentFlow::class, SickBlock::class);
+        $this->addAccessory(Payment::class, SickBlock::class);
 
         $this->checkpoints = [
             'REG'   => ['description' => 'ثبت نام ناقص' , 'next' => DietType::class],

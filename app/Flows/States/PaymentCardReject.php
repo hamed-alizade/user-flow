@@ -4,8 +4,7 @@ namespace App\Flows\States;
 
 class PaymentCardReject extends State
 {
-    public $name = 'payment/card/reject';
-    public $type = 'inout';
+    public $type = State::DISPLAY;
     public $checkpoint = 'PFAIL';
     public $allowedCheckpoints = ['PWAIT'];
     public $next = PaymentBill::class;

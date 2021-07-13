@@ -17,14 +17,14 @@ use App\Flows\States\Package;
 use App\Flows\States\Report;
 use App\Flows\States\SickBlock;
 use App\Flows\States\SickSelect;
-use App\Flows\States\SickSelectProcess;
+use App\Flows\States\SickSelectAction;
 use App\Flows\States\Size;
 use App\Flows\States\StartFoodListProcess;
 use App\Flows\States\View;
 use App\Flows\States\WeightAlert;
 use App\Flows\States\WeightEnter;
 
-class ListFlow extends AbstractFlow
+class FoodList extends AbstractFlow
 {
     protected $isMain = true;
     protected $isDependent = false;
@@ -46,7 +46,7 @@ class ListFlow extends AbstractFlow
             CheckDietPermission::class,
             CheckSicknessStatus::class,
             StartFoodListProcess::class,
-//            SickBlock::class,    // اگر این مورد نباشه اجرای برنامه از حلقه خارج نمیشه (تا اینکه به یه استیت غیرتابع برسه اگه هم نباشه ...)
+
             End::class
         ];
 

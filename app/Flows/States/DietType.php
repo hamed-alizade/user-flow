@@ -4,8 +4,7 @@ namespace App\Flows\States;
 
 class DietType extends State
 {
-    public $name = 'diet/type';
-    public $type = 'inout';
+    public $type = State::DISPLAY;
     public $checkpoint = 'REG';
     public $allowedCheckpoints = ['REG', 'DBLOCKED'];
 

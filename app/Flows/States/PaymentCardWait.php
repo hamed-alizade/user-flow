@@ -4,8 +4,7 @@ namespace App\Flows\States;
 
 class PaymentCardWait extends State
 {
-    public $name = 'payment/card/wait';
-    public $type = 'inout';
+    public $type = State::DISPLAY;
     public $checkpoint = 'PWAIT';
     public $allowedCheckpoints = ['REG'];
 

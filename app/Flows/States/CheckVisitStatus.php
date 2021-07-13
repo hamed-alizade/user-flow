@@ -4,8 +4,7 @@ namespace App\Flows\States;
 
 class CheckVisitStatus extends State
 {
-    public $name = 'checkVisitStatus';
-    public $type = 'decision';
+    public $type = State::DECISION;
     public $yes;
     public $no;
 

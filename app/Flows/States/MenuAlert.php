@@ -4,8 +4,7 @@ namespace App\Flows\States;
 
 class MenuAlert extends State
 {
-    public $name = 'menu/alert';
-    public $type = 'inout';
+    public $type = State::DISPLAY;
     public $allowedCheckpoints = ['NORMAL'];
 
 }

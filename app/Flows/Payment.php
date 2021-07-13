@@ -4,7 +4,7 @@ namespace App\Flows;
 
 use App\Flows\States\CheckCardPaymentStatus;
 use App\Flows\States\CheckPaymentType;
-use App\Flows\States\PaymentEndPointProcess;
+use App\Flows\States\PaymentEndPointAction;
 use App\Flows\States\PaymentBill;
 use App\Flows\States\PaymentCard;
 use App\Flows\States\PaymentCardConfirm;
@@ -14,7 +14,7 @@ use App\Flows\States\PaymentOnline;
 use App\Flows\States\PaymentOnlineFail;
 use App\Flows\States\PaymentOnlineSuccess;
 
-class PaymentFlow extends AbstractFlow
+class Payment extends AbstractFlow
 {
     protected $isMain = false;
     protected $isDependent = true;
@@ -35,7 +35,7 @@ class PaymentFlow extends AbstractFlow
             PaymentOnlineSuccess::class,
             PaymentOnlineFail::class,
 
-            PaymentEndPointProcess::class,
+            PaymentEndPointAction::class,
         ];
     }
 }

@@ -4,8 +4,7 @@ namespace App\Flows\States;
 
 class Package extends State
 {
-    public $name = 'package';
-    public $type = 'inout';
+    public $type = State::DISPLAY;
     public $allowedCheckpoints = ['REG', 'BLOCKED', 'DBLOCKED'];
 
 }

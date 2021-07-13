@@ -2,10 +2,11 @@
 
 namespace App\Flows\States;
 
+use App\Flows\Flow;
+
 class WeightEnter extends State
 {
-    public $name = 'weight/enter';
-    public $type = 'inout';
+    public $type = State::DISPLAY;
     public $allowedCheckpoints = ['NORMAL'];
 
 }

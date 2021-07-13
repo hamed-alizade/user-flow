@@ -4,8 +4,7 @@ namespace App\Flows\States;
 
 class Size extends State
 {
-    public $name = 'size';
-    public $type = 'inout';
+    public $type = State::DISPLAY;
     public $allowedCheckpoints = ['REG', 'DBLOCKED'];
 
 }

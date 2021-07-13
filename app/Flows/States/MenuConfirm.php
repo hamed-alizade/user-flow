@@ -4,8 +4,7 @@ namespace App\Flows\States;
 
 class MenuConfirm extends State
 {
-    public $name = 'menu/confirm';
-    public $type = 'inout';
+    public $type = State::DISPLAY;
     public $allowedCheckpoints = ['POK', 'NORMAL'];
 
 }

@@ -3,24 +3,21 @@
 namespace App\Flows;
 
 use App\Flows\States\State;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class BaseFlow
 {
-    private const INOUT = 'inout';
-    private const PROCESS = 'process';
-    private const DECISION = 'decision';
-    private const TERMINAL = 'terminal';
+    public const DISPLAY = 'display';
+    public const ACTION = 'action';
+    public const DECISION = 'decision';
+    public const TERMINAL = 'terminal';
 
     protected static $flow = [];
     protected static $arguments = [];
     protected static $defaultFlow;
     protected static $userFlow;
 
-    public static function getStatesName(array $states) : array
-    {
-        return collect($states)->pluck('name')->toArray();
-    }
 
 //    public static function getState($userId, $nextState, $arguments) : string
 //    {
@@ -39,7 +36,6 @@ class BaseFlow
                 return 'not exist this page!';
                 // stop or abort(404)
             }
-
             $currentState = AbstractFlow::callMethod(self::$userFlow->flow[$currentStateIndex],'getThis');
             if($currentState->next) {
                 $nextStateIndex = self::getIndexOfState($currentState->next, self::$userFlow->flow);
@@ -47,25 +43,21 @@ class BaseFlow
                 $nextStateIndex = $currentStateIndex;
                 if (strtolower(self::$userFlow->source) == 'db') {
                     $nextStateIndex = $currentStateIndex + 1;
-                } elseif (strtolower(self::$userFlow->source) == 'previous_flow') {
+                } elseif (strtolower(self::$userFlow->source) == 'previous_flow') { // when developer use jump function
                     self::$userFlow->source = 'db';
                 }
             }
-
-            $nextState = AbstractFlow::callMethod(self::$userFlow->flow[$nextStateIndex], 'getThis');
-            $nextStateAddress = self::$userFlow->flow[$nextStateIndex];
-            if ($nextPlus1State) {
+            if ( ! $nextPlus1State) {
+                $nextState = AbstractFlow::callMethod(self::$userFlow->flow[$nextStateIndex], 'getThis');
+                $nextStateAddress = self::$userFlow->flow[$nextStateIndex];
+            } else {
                 $nextState = AbstractFlow::callMethod($nextPlus1State, 'getThis');
                 $nextStateAddress = $nextPlus1State;
                 $nextPlus1State = null;
             }
 
-            self::$userFlow->state = $nextState->name;
-            self::$userFlow->state_type = $nextState->type;
-            self::$userFlow->state_address = __NAMESPACE__ . '\\States\\' . self::toPascalCase($nextState->name);
-
             if (empty($nextState)) {
-                return 'not exist this page!';
+                return 'This page is not exist!';
                 // stop or abort(404)
             }
 
@@ -73,41 +65,55 @@ class BaseFlow
                 return 'not allowed!';
                 // stop or move to a state by checkpoint
             }
+
+            // assign next state values into $userFlow
+            $nextStateName = self::getClassName($nextStateAddress);
+            self::$userFlow->state = $nextStateName;
+            self::$userFlow->state_type = strtolower($nextState->type);
+            self::$userFlow->state_address = $nextStateAddress;
+
             $currentCheckpoint = self::$userFlow->checkpoint;
-            if (in_array(strtolower($nextState->type),[self::DECISION, self::PROCESS])) {
+
+            if (in_array(self::$userFlow->state_type,[self::DECISION, self::ACTION])) {
+
+                // exchange properties value between $this and next state
                 State::$arguments = self::$arguments;
                 $stateObj = new $nextStateAddress();
-                $result = call_user_func(array($stateObj, $nextState->name));
+                $result = call_user_func(array($stateObj, $nextStateName));
                 self::$arguments = State::$arguments;
-                if (strtolower($nextState->type) == self::DECISION) {
+
+                // get the result of the state function
+                if (self::$userFlow->state_type == self::DECISION) {
                     if ( ! empty($result) and ! empty($nextState->$result)) {
                         $nextPlus1State = $nextState->$result;
                     }
                     else {
-                        self::$userFlow->state = $nextState->name;
+                        self::$userFlow->state = $nextStateName; // check
                     }
-                } elseif (strtolower($nextState->type) == self::PROCESS) {
+                } elseif (self::$userFlow->state_type == self::ACTION) {
                     if(self::$userFlow->source != 'previous_flow') {
-                        self::$userFlow->state = $nextState->name;
+                        self::$userFlow->state = $nextStateName;
                     }
                 }
                 $nextStateCheckpoint = $stateObj->getCheckpoint() ?? $nextState->getCheckpoint();
             }
             else {
-                $nextStateCheckpoint = $nextState->getCheckpoint();
+                $nextStateCheckpoint = $nextState->getCheckpoint(); //  dangerous: don't set because set checkpoint without logic and checking
             }
 
             $flowName = self::$userFlow->flow_name;
             $next = $flowName . '/' . self::toUrlFormat($nextStateName);
-            $next = $flowName . '/' . $nextState->name;
-            if (strtolower($nextState->type) == self::TERMINAL) { $next=''; }
-            $checkpoint = $nextStateCheckpoint ?? self::$userFlow->checkpoint;
-            if ($currentCheckpoint != $checkpoint) {
+            if ($nextState->type == self::TERMINAL) { $next=''; }
+
+            $nextCheckpoint = $nextStateCheckpoint ?? self::$userFlow->checkpoint;
+            if ($currentCheckpoint != $nextCheckpoint) {
                 self::$userFlow->previous_checkpoint = self::$userFlow->checkpoint;
-                self::$userFlow->checkpoint = $checkpoint;
+                self::$userFlow->checkpoint = $nextCheckpoint;
             }
-            print_r(self::$userFlow); echo '<br/><br/>';
-        } while (in_array(strtolower($nextState->type),[self::DECISION, self::PROCESS]));
+
+            print_r(self::$userFlow);
+//            print_r ($nextPlus1State);
+        } while (in_array($nextState->type,[self::DECISION, self::ACTION]));
 
         if(self::$userFlow->checkpoint and self::$arguments['user_id']) {
             self::setUserCheckpoint();
@@ -120,9 +126,13 @@ class BaseFlow
         return str_replace(' ', '', ucwords(str_replace(['-', '/', '\\'], ' ', $string)));
     }
 
+    public static function toUrlFormat(string $string) : string
+    {
+        return strtolower(preg_replace('/(?<!^)[A-Z]/', '/$0', $string));
+    }
+
     public static function getIndexOfState(string $state,array $flow)
     {
-//        $statesName = self::getStatesName($flow);
         return array_search($state, $flow);
     }
 
@@ -171,7 +181,7 @@ class BaseFlow
             $state = '';
             $stateType = '';
         } else {
-            $state = $stateClass->name;
+            $state = self::getClassName($stateAddress);
             $stateType = $stateClass->type;
         }
         return (object)[
@@ -196,11 +206,18 @@ class BaseFlow
     private static function getDefaultFlow() : object
     {
         $defaultFlow = Config::get('flow.default_flow');
+        $flowName = substr($defaultFlow, strripos($defaultFlow,'\\') + 1);
         return (object)[
             'flow_name' => $flowName,
             'previous_checkpoint'=>null,
             'checkpoint' => Config::get('flow.default_checkpoint')
         ];
+    }
+
+    public static function getClassName(string $stateClassAddress) : string
+    {
+        $pos = strrpos($stateClassAddress, '\\') + 1;
+        return ucfirst($pos !==false ? substr($stateClassAddress, $pos) : $stateClassAddress);
     }
 
     public static function jumpTo(string $flow, string $state = null)
@@ -211,7 +228,7 @@ class BaseFlow
         self::$userFlow->flow = $flowClass->getFlow();
         self::$userFlow->flow_name = $flowName;
         self::$userFlow->state_address = (array_search($state, $flowClass->getFlow()) !== false) ? $state : self::$userFlow->state = $flowClass->getFlow()[0];
-        self::$userFlow->state = AbstractFlow::callMethod(self::$userFlow->state_address, 'getThis')->name;
+        self::$userFlow->state = self::getClassName(self::$userFlow->state_address);
     }
 
     public static function getUserCheckpoint($userId, $flowName)
@@ -255,8 +272,6 @@ class BaseFlow
 
     public static function getPreviousCheckpoint() : ? string
     {
-//        $userCheckpoint = self::getUserCheckpoint(self::$userFlow->user_id, self::$userFlow->flow_name);
-//        return $userCheckpoint->previous_checkpoint ?? null;
         return self::$userFlow->previous_checkpoint;
     }
 }

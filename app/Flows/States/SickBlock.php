@@ -4,9 +4,8 @@ namespace App\Flows\States;
 
 class SickBlock extends State
 {
-    public $name = 'sick/block';
-    public $type = 'inout';
-    public $checkpoint = 'BLOCKED';
+    public $type = State::DISPLAY;
     public $allowedCheckpoints = ['REG', 'NORMAL', 'BLOCKED', 'DBLOCKED'];
     public $next = SickSelect::class;
+
 }

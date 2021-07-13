@@ -4,7 +4,6 @@ namespace App\Flows\States;
 
 class WeightAlert extends State
 {
-    public $name = 'weight/alert';
-    public $type = 'inout';
+    public $type = State::DISPLAY;
     public $allowedCheckpoints = ['NORMAL'];
 }

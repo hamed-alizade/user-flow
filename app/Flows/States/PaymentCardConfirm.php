@@ -4,9 +4,8 @@ namespace App\Flows\States;
 
 class PaymentCardConfirm extends State
 {
-    public $name = 'payment/card/confirm';
-    public $type = 'inout';
+    public $type = State::DISPLAY;
     public $checkpoint = 'POK';
     public $allowedCheckpoints = ['PWAIT'];
-    public $next = PaymentEndPointProcess::class;
+    public $next = PaymentEndPointAction::class;
 }

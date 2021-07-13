@@ -11,12 +11,12 @@ use App\Flows\States\Package;
 use App\Flows\States\Report;
 use App\Flows\States\SickBlock;
 use App\Flows\States\SickSelect;
-use App\Flows\States\SickSelectProcess;
+use App\Flows\States\SickSelectAction;
 use App\Flows\States\Size;
 use App\Flows\States\Start;
-use App\Flows\States\StartListFlowProcess;
+use App\Flows\States\StartListFlowAction;
 
-class PsychologyFlow extends AbstractFlow
+class Psychology extends AbstractFlow
 {
     protected $isMain = false;
     protected $isDependent = false;

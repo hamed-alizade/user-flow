@@ -7,7 +7,11 @@ use App\Flows\Flow;
 
 abstract class State
 {
-    public $name;
+    public const DISPLAY = 'display';
+    public const ACTION = 'action';
+    public const DECISION = 'decision';
+    public const TERMINAL = 'terminal';
+
     public $type;
 
     public $allowedCheckpoints;
@@ -18,8 +22,6 @@ abstract class State
     const YES = 'yes';
     const NO = 'no';
     public static $arguments;
-    public static $currentFlowClassName;
-    public static $userId;
     public $next = null;
 
     public function getThis()

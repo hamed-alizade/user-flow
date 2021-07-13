@@ -4,6 +4,5 @@ namespace App\Flows\States;
 
 class Start extends State
 {
-    public $name = 'start';
-    public $type = 'terminal';
+    public $type = State::TERMINAL;
 }
