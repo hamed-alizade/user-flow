@@ -195,11 +195,11 @@ class BaseFlow
 
     private static function getDefaultFlow() : object
     {
-        $flowName = substr(static::$defaultFlow, strripos(static::$defaultFlow,'\\') + 1);
+        $defaultFlow = Config::get('flow.default_flow');
         return (object)[
             'flow_name' => $flowName,
             'previous_checkpoint'=>null,
-            'checkpoint' => static::$defaultCheckpoint
+            'checkpoint' => Config::get('flow.default_checkpoint')
         ];
     }
 
