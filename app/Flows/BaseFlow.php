@@ -98,7 +98,7 @@ class BaseFlow
             }
 
             $flowName = self::$userFlow->flow_name;
-            if (str_ends_with(self::$userFlow->flow_name, 'Flow')) { $flowName = strtolower(str_ireplace(array('Flow'), '', $flowName)); }
+            $next = $flowName . '/' . self::toUrlFormat($nextStateName);
             $next = $flowName . '/' . $nextState->name;
             if (strtolower($nextState->type) == self::TERMINAL) { $next=''; }
             $checkpoint = $nextStateCheckpoint ?? self::$userFlow->checkpoint;
@@ -141,10 +141,10 @@ class BaseFlow
         return AbstractFlow::callMethod($flowClassName, 'getFlow');
     }
 
-    private static function detectUserFlow($userId, $FlowAndState) : object
+    private static function detectUserFlow($userId, $flowAndState) : object
     {
-        [$flowTitle, $state] = self::separateFlowAndState(strtolower($FlowAndState));
-        $flowName = ucfirst(strtolower($flowTitle)) . 'Flow';
+        [$flowTitle, $state] = self::separateFlowAndState(strtolower($flowAndState));
+        $flowName = ucfirst(strtolower($flowTitle));
 
         $source = 'db';
         $userDBFlow = self::getUserCheckpoint($userId, $flowName);
@@ -158,7 +158,7 @@ class BaseFlow
         }
         $userFlow = $userDBFlow ?? $userMainFlow ?? $userDefaultFlow;
 
-        $flowClassName = __NAMESPACE__ .'\\' . $userFlow->flow_name;
+        $flowClassName = __NAMESPACE__ .'\\'. $userFlow->flow_name;
         $flowClass = AbstractFlow::callMethod($flowClassName, 'getThis');
         $flow = $flowClass->getFlow();
         if ( ! empty($userDBFlow)) {
