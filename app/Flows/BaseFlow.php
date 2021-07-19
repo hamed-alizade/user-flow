@@ -33,8 +33,7 @@ class BaseFlow
         do {
             $currentStateIndex = self::getIndexOfState(self::$userFlow->state_address, self::$userFlow->flow);
             if ($currentStateIndex === false) {
-                return 'not exist this page!';
-                // stop or abort(404)
+                abort(404);
             }
             $currentState = AbstractFlow::callMethod(self::$userFlow->flow[$currentStateIndex],'getThis');
             if($currentState->next) {
@@ -57,12 +56,13 @@ class BaseFlow
             }
 
             if (empty($nextState)) {
-                return 'This page is not exist!';
+                abort(404);
+//                return 'This page is not exist!';
                 // stop or abort(404)
             }
 
             if ($nextState->allowedCheckpoints and ! in_array(self::$userFlow->checkpoint, $nextState->allowedCheckpoints)) {
-                return 'not allowed!';
+                return Response('You do not have access rights to the content!', 403);
                 // stop or move to a state by checkpoint
             }
 
@@ -98,7 +98,7 @@ class BaseFlow
                 $nextStateCheckpoint = $stateObj->getCheckpoint() ?? $nextState->getCheckpoint();
             }
             else {
-                $nextStateCheckpoint = $nextState->getCheckpoint(); //  dangerous: don't set because set checkpoint without logic and checking
+                $nextStateCheckpoint = $nextState->getCheckpoint(); //  dangerous: don't set because checkpoint set without logic and checking
             }
 
             $flowName = self::$userFlow->flow_name;
