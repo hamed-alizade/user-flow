@@ -38,8 +38,6 @@ class BaseFlow
             $currentStateIndex = self::getIndexOfState(self::$userFlow->state_address, self::$userFlow->flow);
             if ($currentStateIndex === false) {
                 abort(404);
-//                return 'This page is not exist!';
-                // stop or abort(404)
             }
             $currentState = self::callMethod(self::$userFlow->flow[$currentStateIndex],'getThis');
             if($currentState->next) {
@@ -104,7 +102,7 @@ class BaseFlow
                 $nextStateCheckpoint = $stateObj->getCheckpoint() ?? $nextState->getCheckpoint();
             }
             else {
-                $nextStateCheckpoint = $nextState->getCheckpoint(); //  dangerous: don't set because set checkpoint without logic and checking
+                $nextStateCheckpoint = $nextState->getCheckpoint(); //  dangerous: don't set because checkpoint set without logic and checking
             }
 
             $flowName = self::$userFlow->flow_name;
@@ -181,12 +179,12 @@ class BaseFlow
 
     private static function getDefaultFlow() : object
     {
-        $defaultFlow = Config::get('flow.default_flow');
+        $defaultFlow = config('flow.default_flow');
         $flowName = substr($defaultFlow, strripos($defaultFlow,'\\') + 1);
         return (object)[
             'flow_name' => $flowName,
             'previous_checkpoint'=>null,
-            'checkpoint' => Config::get('flow.default_checkpoint')
+            'checkpoint' => config('flow.default_checkpoint')
         ];
     }
 
