@@ -27,6 +27,11 @@ class CheckSicknessStatus extends State
         if (Flow::getCheckpoint() == 'BLOCKED') {
             $this->setCheckpoint(Flow::getPreviousCheckpoint());
         }
+        elseif(Flow::getCheckpoint() == 'NORMAL') {
+//            $this->no = CheckVisitStatus::class;
+            return CheckVisitStatus::class;
+        }
+
         return self::NO;
     }
 }

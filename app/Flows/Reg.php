@@ -15,6 +15,7 @@ use App\Flows\States\PaymentBill;
 use App\Flows\States\PaymentCardConfirm;
 use App\Flows\States\PaymentCardReject;
 use App\Flows\States\PaymentCardWait;
+use App\Flows\States\PaymentEndPointAction;
 use App\Flows\States\Report;
 use App\Flows\States\SickBlock;
 use App\Flows\States\SickSelect;
@@ -22,6 +23,7 @@ use App\Flows\States\SickSelectAction;
 use App\Flows\States\Size;
 use App\Flows\States\Start;
 use App\Flows\States\StartListFlowAction;
+use App\Flows\States\TestAction;
 use App\Flows\States\View;
 
 class Reg extends AbstractFlow
@@ -44,6 +46,7 @@ class Reg extends AbstractFlow
             CheckSicknessStatus::class,
             SickBlock::class,
             Activity::class,
+            TestAction::class,
 //            DietHistory::class,
 //            DietGoal::class,
 //            Overview::class,
@@ -62,7 +65,7 @@ class Reg extends AbstractFlow
         $this->checkpoints = [
             'REG'   => ['description' => 'ثبت نام ناقص' , 'next' => DietType::class],
             'PWAIT' => ['description' => 'در انتظار تایید پرداخت' , 'next' => PaymentCardWait::class],
-            'POK'   => ['description' => 'پرداخت موفق (ترم تشکیل شده اما ویزیت فعال ندارد)' , 'next' => PaymentCardConfirm::class],
+            'POK'   => ['description' => 'پرداخت موفق (ترم تشکیل شده اما ویزیت فعال ندارد)' , 'next' => Activity::class],
             'PFAIL' => ['description' => 'پرداخت ناموفق' , 'next' => PaymentCardReject::class],
 //            'ETERM' => ['description' => 'ترم منقضی شده' , 'next' => 'checkTermStatus'],  // should be checked if it need to be renewed or revived
 //            'EVISIT' => ['description' => 'ویزیت منقضی شده' , 'next' => 'getWeightAlert'],
